@@ -1,0 +1,11 @@
+html{
+  display: grid;
+  place-items: center;
+  height: 100vh;
+}
+canvas {
+  background: tan;
+  max-width: 90vh;
+  max-height: 90vh;
+}
+
