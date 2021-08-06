@@ -1,11 +1,27 @@
 html{
+  height: 100vh;
+
+}
+body {
+  margin: 0;
+  height: 100%;
+  width: 100%;
+}
+#app {
   display: grid;
   place-items: center;
-  height: 100vh;
+  height: 100%;
+  width: 100%;
+}
+svg {
+  background: grey;
+  height: 40vw;
+  width: 40vw;
+}
+polygon {
+  fill: red;
 }
 canvas {
   background: tan;
-  max-width: 90vh;
-  max-height: 90vh;
 }
 

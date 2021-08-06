@@ -3,14 +3,14 @@ import './style.css'
 const app = document.querySelector<HTMLDivElement>('#app')!
 
 app.innerHTML = `
-<canvas height="800" width="800"></canvas>
+<svg id="svg" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+</svg>
 `
-const canvas = document.querySelector("canvas") /* canvas element */, 
-			ctx = canvas.getContext('2d') /* 2L canvas context */, 
-			width = canvas.width /* edge length of canvas square */, 
+const svg =  document.querySelector("svg") /* canvas element */, 
+			width = svg.offsetWidth /* edge length of canvas square */, 
 			tl = -.5*width /* top left corner coord if 0,0 is in the middle */, 
 			hlfDignl = width/Math.SQRT2 /* half diagonal of canvas square */, 
-			polyRadius = .05*width /* polygon circumradius */, 
+			polyRadius = 30 /* polygon circumradius */, 
 			unitAngle = 2*Math.PI/360 /* unit angle = 1 degree */, 
 			
 			POLY = [] /* array to fill with polygons */, 
@@ -24,7 +24,7 @@ const canvas = document.querySelector("canvas") /* canvas element */,
 			NO = OPTS.length, 
 			
 			FN = ['line', 'move'];
-
+console.log(width)
 function rand(max = 1, min = 0, dec = 0) {
 	return +(min + (max - min)*Math.random()).toFixed(dec)
 };
@@ -33,21 +33,19 @@ class RandPoly {
 	constructor() {
 		/* SHAPE PROPERTIES */
 		this.sides = 6; /* number of vertices */
-		this.angle = 2*Math.PI/this.sides; /* base angle corresp to an edge */		
-		/* POSITION PROPERTIES */
-		/* polar coordinates */
-		this.posRadius = 206; /* position radius */
-		this.posAngle = 10; /* position angle */	
+		this.angle = 2*Math.PI/this.sides; /* base angle corresp to an edge */
+		this.XCord = 500;
+		this.YCord = 500;	
 	}
 	
 	get coords() {
 		let vx = [];		
 			
 		for(let i = 0; i < this.sides; i++) {
-			let ca = this.posAngle + i*this.angle;
+			let ca = i*this.angle;
 			vx.push([
-				Math.round(this.posRadius*Math.cos(this.posAngle) + polyRadius*Math.cos(ca)), 
-				Math.round(this.posRadius*Math.sin(this.posAngle) + polyRadius*Math.sin(ca))
+				Math.round(this.YCord/2 + polyRadius*Math.cos(ca)), 
+				Math.round(this.XCord/2 + polyRadius*Math.sin(ca))
 			])
 		}
 		
@@ -56,30 +54,28 @@ class RandPoly {
 };
 
 function draw() {
-	ctx.clearRect(tl, tl, width, width);
-
-			
-      ctx.fillStyle = '#f00';
-			ctx.beginPath();
+			const svg = document.querySelector("#svg")
 
 		 POLY.forEach(p => {
 				let vx = p.coords;
 				console.log(p)
-				for(let k = 0; k <= p.sides; k++) {
-					ctx[k ? 'lineTo' : 'moveTo'](...vx[k%p.sides])
-					
-				}
-			});
+					let points = ""
+					vx.forEach(e => {
+						const point = `${e[0]},${e[1]}`
+						points = points.concat(' ', point)
+					});
+					const hex = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+					hex.setAttribute("points", points);
+					console.log(points)
+				svg?.append(hex)
 
-			ctx.closePath();
-      ctx.fill();
+			});
 
 	
 	// requestAnimationFrame(draw);
 };
 
 function init() {
-	ctx.translate(-tl, -tl);
 
 	for(let i = 0; i < N; i++) {
 		let p = new RandPoly();
